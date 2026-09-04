@@ -1,0 +1,44 @@
+name: CI/CD Pipeline - Docker Audit
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  cicd-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descargar el código del repositorio
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      # 2. Configurar Python
+      - name: Configurar Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      # 3. Instalar dependencias
+      - name: Instalar dependencias y herramientas
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest bandit
+
+      # 4. Ejecutar pruebas unitarias (Pytest)
+      - name: Ejecutar Pruebas (Pytest)
+        run: |
+          pytest
+
+      # 5. Ejecutar Bandit (Seguridad en Python)
+      - name: Ejecutar Bandit
+        run: |
+          bandit -r . -x ./venv -ll
+
+      # 6. Construir la imagen de Docker
+      - name: Construir imagen Docker
+        run: |
+          docker build -t ejercicio-docker-audit:latest .

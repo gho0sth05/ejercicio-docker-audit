@@ -1,0 +1,12 @@
+
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: ejercicio-audit-container
+    ports:
+      - "5050:5050"
+    environment:
+      - FLASK_DEBUG=False
+    restart: unless-stopped
