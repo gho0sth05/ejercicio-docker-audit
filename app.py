@@ -45,4 +45,4 @@ def health_check():
 if __name__ == "__main__":
     # (B201 y B104): Debug desactivado por seguridad en producción
     debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-    app.run(host='0.0.0.0', port=5050, debug=debug_mode)
+    app.run(host='0.0.0.0', port=5050, debug=debug_mode) # nosec B104

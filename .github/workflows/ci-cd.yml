@@ -36,7 +36,7 @@ jobs:
       # 5. Ejecutar Bandit (Seguridad en Python)
       - name: Ejecutar Bandit
         run: |
-          bandit -r . -x ./venv -ll
+          bandit -r . -x ./venv -l
 
       # 6. Construir la imagen de Docker
       - name: Construir imagen Docker
