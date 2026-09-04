@@ -1,11 +1,10 @@
 import os
-import random
 from flask import Flask, request
 import pymysql
 
 app = Flask(__name__)
 
-#  (B105): Credenciales obtenidas de variables de entorno de forma segura
+# (B105): Credenciales obtenidas de variables de entorno de forma segura
 DB_HOST = os.getenv("DB_HOST", "servidor-bd-ejemplo")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASS = os.getenv("DB_PASS", "admin_adso_2026_secreto")
@@ -24,7 +23,7 @@ def home():
 def buscar_usuario():
     usuario_id = request.args.get("id", "1")
     
-    #   (B608): Uso de consultas parametrizadas para evitar Inyección SQL
+    # (B608): Uso de consultas parametrizadas para evitar Inyección SQL
     conn = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PASS, database=DB_NAME)
     cursor = conn.cursor()
     query_segura = "SELECT * FROM usuarios WHERE id = %s"
@@ -37,12 +36,10 @@ def buscar_usuario():
 
 @app.route("/health")
 def health_check():
-    if random.random() < 0.3:
-        
-        pass 
+    # Ruta de salud estable y limpia sin randoms innecesarios
     return "OK", 200
 
 if __name__ == "__main__":
     # (B201 y B104): Debug desactivado por seguridad en producción
     debug_mode = os.getenv("FLASK_DEBUG", "False").lower() == "true"
-    app.run(host='0.0.0.0', port=5050, debug=debug_mode) # nosec B104
+    app.run(host='0.0.0.0', port=5050, debug=debug_mode)  # nosec B104
