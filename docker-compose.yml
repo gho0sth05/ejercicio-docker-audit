@@ -1,12 +1,49 @@
-
 version: '3.8'
 
+networks:
+  app-network:
+    driver: bridge
+
 services:
-  api:
+  # 1. Tu Aplicación Flask (Auditoría / API)
+  web:
     build: .
-    container_name: ejercicio-audit-container
+    container_name: flask-app
+    restart: always
     ports:
       - "5050:5050"
     environment:
       - FLASK_DEBUG=False
-    restart: unless-stopped
+      - DB_HOST=servidor-bd-ejemplo
+      - DB_USER=root
+      - DB_PASS=admin_adso_2026_secreto
+      - DB_NAME=legacydb
+    networks:
+      - app-network
+
+  # 2. Dozzle (Para monitorear los logs de los contenedores en tiempo real)
+  dozzle:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  # 3. Uptime Kuma (Para monitorear el estado de la app)
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
+    restart: always
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+
+volumes:
+  uptime-kuma-data:
